@@ -18,9 +18,9 @@ spec:
     spec:
       containers:
       - image: web-api:v2
-        name: web-api
+        name: web-api-v2
         ports:
         - containerPort: 3000
-          name: web-api
+          name: http
       restartPolicy: Always    
 ---

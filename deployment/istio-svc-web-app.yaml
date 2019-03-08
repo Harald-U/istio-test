@@ -10,4 +10,9 @@ spec:
     - destination:
         host: web-api
         subset: v1
+      weight: 80  
+    - destination:
+        host: web-api
+        subset: v2 
+      weight: 20   
 ---
