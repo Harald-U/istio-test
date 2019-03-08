@@ -1,4 +1,4 @@
-##minimal istio request routing sample on minikube
+## minimal istio request routing sample on minikube
 
 ### prep
 
