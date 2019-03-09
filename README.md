@@ -1,10 +1,10 @@
-## minimal istio request routing sample on minikube
+## Minimal Istio request routing sample on Minikube
 
-i used this scenario to test the behaviour ingress traffic routing (used for blue/green and canary deployments). in the end it is made up of two applications: web-api in 2 versions (v1 and v2) and a frontend that simply passes request thru to web-api.
+I used this scenario to test the behaviour ingress traffic routing (used for blue/green and canary deployments). In the end it is made up of two applications: Web-API in 2 versions (v1 and v2) and a Frontend that simply passes request thru to web-api.
 
-## web-api
+## Web-API
 
-the web-api application reads a string ("Version 1" or "Version 2") from an environment variable that is set in the deployment.yaml and returns that string when called with the URI /test:
+the Web-API application reads a string ("Version 1" or "Version 2") from an environment variable that is set in the deployment.yaml and returns that string when called with the URI /test:
 
 ```
 curl http://192.168.99.100:31380/test
@@ -13,15 +13,15 @@ curl http://192.168.99.100:31380/test
 => Version 2
 ```
 
-### prep 
+### Preparation 
 
-use docker environment of minikube
+Use the docker environment of Minikube
 
 ```
 eval $(minikube docker-env)
 ```
 
-### web-api
+### Web-API
 
 cd web-api
 
@@ -29,11 +29,11 @@ cd web-api
 docker build -t web-api:1 .
 ```
 
-### deploy
+### Deploy
 
 cd deployment
 
-if needed: 
+If needed (automatic envoy injection): 
 
 `kubectl label namespace default istio-injection=enabled`
 
@@ -43,32 +43,40 @@ kubectl apply -f deployment.yaml
 kubectl apply -f istio-ingress.yaml 
 ```
 
-### test
+### Test
 
 ```
 while true; do curl http://192.168.99.100:31380/test; sleep 1; done
 ```
 
---> accessing service web-app thru ingress gateway at nodeport 31380
+--> Accessing service web-app thru ingress gateway at nodeport 31380
 
 ==> v1 / v2 balanced
 
-### istio
+### Apply Istio rules
 
 ```
 kubectl apply -f destinationrule.yaml
 kubectl apply -f istio-svc-web-app.yaml
 ```
+==> Now 80% should go thru v1, 20% thru v2, **but it doesn't work!**
 
-==> 80% should go thru v1, 20% thru v2, BUT IT DOESN'T
+```
+while true; do curl http://192.168.99.100:31380/test; sleep 1; done
+```
+![web-api only](images/web-api.png)
+You can see that 100% of the traffic goes to the web-api service and although an istio virtualservice (istio-svc-web-app.yaml) is providing a 80/20 weight between v1 and v2, in reality the traffic is evenly split (50/50). Not what I would expect.
 
-## add frontend
 
-the frontend app simply passes a GET request on /get thru to web-api /test. result:
+## Add Frontend
+
+The Frontend app simply passes a GET request on /get thru to web-api /test. Result:
 
 ```
 curl 192.168.99.100:31380/get
 => Frontend calling Web-API, Result:  => Version 1
+curl 192.168.99.100:31380/get
+=> Frontend calling Web-API, Result:  => Version 2
 ```
 
 cd frontend
@@ -77,7 +85,7 @@ cd frontend
 docker build -t frontend:1 .
 ```
 
-## deploy frontend
+## Deploy Frontend
 
 cd deployment
 
@@ -86,19 +94,12 @@ kubectl apply -f service-w-frontend.yaml
 kubectl apply -f deployment-w-frontend.yaml  
 ```
 
-No you can test both scenarios: 
 
-calling the GET /test URI of web-api directly (as defined in istio-ingress.yaml):
-
-```
-while true; do curl http://192.168.99.100:31380/test; sleep 1; done
-```
-you can see that 100% of the traffic goes to the web-api service and although an istio virtualservice (istio-svc-web-app.yaml) is providing a 80/20 weight between v1 and v2, in reality the traffic is evenly split (50/50). not what i would expect.
-![web-api only](images/web-api.png)
-now calling the GET /get URI of the frontend app:
+Now test by calling the GET /get URI of the frontend app:
 
 ```
 while true; do curl http://192.168.99.100:31380/get; sleep 1; done
 ```
 ![fronend and web-api](images/frontend+web-api.png)
-now the istio virtualservice is working as expected: ~80% of the requests go to v1, ~20% g to v2.
+The Istio VirtualService is now working as expected: ~80% of the requests go to v1, ~20% g to v2.
+
