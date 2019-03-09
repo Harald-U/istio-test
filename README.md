@@ -1,6 +1,6 @@
 ## minimal istio request routing sample on minikube
 
-i used this scenario to test the behaviour ingress traffic routing (used for blue/green and canary deployments). in the end it is made up of two applications: web-api in 2 versions (v1 and v2) and a frontend that simply passes request thru to web-api.
+i used this scenario to test the behaviour of ingress traffic routing (used for blue/green and canary deployments). in the end it is made up of two applications: web-api in 2 versions (v1 and v2) and a frontend that simply passes request thru to web-api.
 
 ## web-api
 
