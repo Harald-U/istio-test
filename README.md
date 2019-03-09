@@ -65,7 +65,7 @@ kubectl apply -f istio-svc-web-app.yaml
 while true; do curl http://192.168.99.100:31380/test; sleep 1; done
 ```
 ![web-api only](images/web-api.png)
-You can see that 100% of the traffic goes to the web-api service and although an istio virtualservice (istio-svc-web-app.yaml) is providing a 80/20 weight between v1 and v2, in reality the traffic is evenly split (50/50). Not what I would expect.
+You can see that 100% of the traffic flows from the ingress-gateway to the web-api service but although an istio virtualservice (istio-svc-web-app.yaml) is providing a 80/20 weight between v1 and v2, in reality the traffic is evenly split (50/50). Not what I would expect.
 
 
 ## Add Frontend
@@ -92,6 +92,7 @@ cd deployment
 ```
 kubectl apply -f service-w-frontend.yaml 
 kubectl apply -f deployment-w-frontend.yaml  
+kubectl apply -f istio-ingress-w-frontend.yaml 
 ```
 
 
@@ -101,9 +102,5 @@ Now test by calling the GET /get URI of the frontend app:
 while true; do curl http://192.168.99.100:31380/get; sleep 1; done
 ```
 ![fronend and web-api](images/frontend+web-api.png)
-<<<<<<< HEAD
 The Istio VirtualService is now working as expected: ~80% of the requests go to v1, ~20% g to v2.
 
-=======
-now the istio virtualservice is working as expected: ~80% of the requests go to v1, ~20% g to v2.
->>>>>>> 38a1e4c273611fd9d822e85deddeadac642773b1
