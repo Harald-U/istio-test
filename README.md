@@ -101,6 +101,16 @@ Now test by calling the GET /get URI of the frontend app:
 ```
 while true; do curl http://192.168.99.100:31380/get; sleep 1; done
 ```
-![fronend and web-api](images/frontend+web-api.png)
+![frontend and web-api](images/frontend+web-api.png)
 The Istio VirtualService is now working as expected: ~80% of the requests go to v1, ~20% g to v2.
 
+## Conclusion
+
+https://istio.io/docs/concepts/traffic-management/#ingress-and-egress
+
+"Istio assumes that all traffic entering and leaving the service mesh transits through Envoy proxies. By deploying an Envoy proxy in front of services, you can conduct A/B testing, deploy canary services, etc. for user-facing services."
+![istio ingress](images/ingress.png)
+
+This means that the initial scenario using only the Web-API with an Istio Ingress in front SHOULD work ... I have yet to figure out why it doesn't work as expected.
+
+https://stackoverflow.com/questions/55079115/istio-request-routing-for-user-facing-service-doesnt-work-with-ingress-gateway
