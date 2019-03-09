@@ -1,6 +1,10 @@
 ## Minimal Istio request routing sample on Minikube
 
+<<<<<<< HEAD
 I used this scenario to test the behaviour ingress traffic routing (used for blue/green and canary deployments). In the end it is made up of two applications: Web-API in 2 versions (v1 and v2) and a Frontend that simply passes request thru to web-api.
+=======
+i used this scenario to test the behaviour of ingress traffic routing (used for blue/green and canary deployments). in the end it is made up of two applications: web-api in 2 versions (v1 and v2) and a frontend that simply passes request thru to web-api.
+>>>>>>> 38a1e4c273611fd9d822e85deddeadac642773b1
 
 ## Web-API
 
@@ -101,5 +105,9 @@ Now test by calling the GET /get URI of the frontend app:
 while true; do curl http://192.168.99.100:31380/get; sleep 1; done
 ```
 ![fronend and web-api](images/frontend+web-api.png)
+<<<<<<< HEAD
 The Istio VirtualService is now working as expected: ~80% of the requests go to v1, ~20% g to v2.
 
+=======
+now the istio virtualservice is working as expected: ~80% of the requests go to v1, ~20% g to v2.
+>>>>>>> 38a1e4c273611fd9d822e85deddeadac642773b1
