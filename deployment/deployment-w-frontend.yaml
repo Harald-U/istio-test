@@ -60,3 +60,31 @@ spec:
           name: http
       restartPolicy: Always    
 ---
+apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+      project: istio-test
+      version: v1
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: frontend
+        project: istio-test
+        version: v1
+    spec:
+      containers:
+      - image: frontend:1
+        name: frontend
+        ports:
+        - containerPort: 3000
+          name: http
+      restartPolicy: Always    
+---

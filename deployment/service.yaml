@@ -4,6 +4,7 @@ metadata:
   name: web-api
   labels:
     app: web-api
+    project: istio-test
 spec:
   type: NodePort
   ports:

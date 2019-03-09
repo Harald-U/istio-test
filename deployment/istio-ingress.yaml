@@ -31,5 +31,12 @@ spec:
         host: web-api
         port:
           number: 3000
-
+  - match:
+    - uri:
+        exact: /get
+    route:
+    - destination:
+        host: frontend
+        port:
+          number: 3000
 --- 
