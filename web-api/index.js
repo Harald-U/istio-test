@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var vers = "Version 1";
+var vers = process.env.VERS;
 
 app.get('/test', function(req, res) {
     res.send(vers + "\n"); 
