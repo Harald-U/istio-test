@@ -9,9 +9,9 @@ I have started to add OpenTracing / Jaeger elements to the services. Not complet
 The Web-API application reads a string ("Version 1" or "Version 2") from an environment variable that is set in the deployment yaml and returns that string when called with the URI /test:
 
 ```
-curl http://192.168.99.100:31380/test
+curl http://192.168.99.100:[NodePort]/test
 => Version 1
-curl http://192.168.99.100:31380/test
+curl http://192.168.99.100:[NodePort]/test
 => Version 2
 ```
 
@@ -33,7 +33,7 @@ docker build -t web-api:1 .
 
 ## Add Frontend
 
-The Frontend app simply passes a GET request on /get thru to web-api /test. Result:
+The Frontend app simply passes a GET request on /get thru to web-api /test. Result with Istio Ingress deployed:
 
 ```
 curl 192.168.99.100:31380/get
