@@ -1,0 +1,62 @@
+apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: web-api-v1
+spec:
+  selector:
+    matchLabels:
+      app: web-api
+      project: istio-test
+      version: v1
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: web-api
+        project: istio-test
+        version: v1
+    spec:
+      containers:
+      - image: de.icr.io/uebele/web-api:1
+        name: web-api-v1
+        env:
+        - name: VERS
+          value: "=> Version 1"
+        ports:
+        - containerPort: 3000
+          name: http
+      restartPolicy: Always    
+---
+apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: web-api-v2
+spec:
+  selector:
+    matchLabels:
+      app: web-api
+      project: istio-test
+      version: v2
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: web-api
+        project: istio-test
+        version: v2
+    spec:
+      containers:
+      - image: de.icr.io/uebele/web-api:1
+        name: web-api-v1
+        env:
+        - name: VERS
+          value: "=> Version 2"
+        ports:
+        - containerPort: 3000
+          name: http
+      restartPolicy: Always    
+---

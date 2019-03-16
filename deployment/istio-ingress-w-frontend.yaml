@@ -16,7 +16,7 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: virtualservice-ingress
+  name: virtualservice-ingress-frontend
 spec:
   hosts:
   - "*"
@@ -25,18 +25,9 @@ spec:
   http:
   - match:
     - uri:
-        exact: /test
-    route:
-    - destination:
-        host: web-api
-        port:
-          number: 3000
-  - match:
-    - uri:
         exact: /get
     route:
     - destination:
         host: frontend
-        port:
-          number: 3000
+        subset: v1
 --- 

@@ -27,8 +27,12 @@ spec:
     - uri:
         exact: /test
     route:
-    - destination:
-        host: web-api
-        port:
-          number: 3000
+      - destination:
+          host: web-api
+          subset: v1
+        weight: 80  
+      - destination:
+          host: web-api
+          subset: v2 
+        weight: 20       
 --- 
