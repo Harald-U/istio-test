@@ -7,19 +7,27 @@ const { Tags, FORMAT_HTTP_HEADERS } = require('opentracing');
 const tracer = initTracer("frontend");  
 
 app.get('/get', function(req, res) {
-    const span = tracer.startSpan('frontend');
-    span.setTag('fontend', '/get');
+    const parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers)
+    const span = tracer.startSpan('frontend-get', {
+        childOf: parentSpanContext,
+        tags: {[Tags.SPAN_KIND]: Tags.SPAN_KIND_RPC_SERVER}
+    });
 
-//    request('http://web-api.default.svc.cluster.local:3000/test', function (error, response, body) {
-    request('http://localhost:3001/test', function (error, response, body) {
+    request('http://web-api:3000/test', function (error, response, body) {
+//    request('http://localhost:3001/test', function (error, response, body) {
     res.send("=> Frontend calling Web-API, Result:  " + body);   
     console.log('error:', error);
     console.log('statusCode:', response && response.statusCode); 
     console.log('body:', body); 
+    
+    span.log({
+        'event': '/get',
+        'value': body
     });
 
-    span.finish();
-
+    span.finish();   
+    });
+     
 });
 
 app.get('/test', function(req, res) {
