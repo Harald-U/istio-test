@@ -1,0 +1,51 @@
+apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: http-echo
+spec:
+  selector:
+    matchLabels:
+      app: http-echo
+      version: v1
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: http-echo
+        version: v1
+    spec:
+      containers:
+      - image: http-echo:1
+        name: http-echo
+        ports:
+        - containerPort: 8080
+          name: http
+      restartPolicy: Always    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-echo
+  labels:
+    app: http-echo
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      name: http
+      protocol: TCP
+  selector:
+    app: http-echo
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: http-echo
+spec:
+  host: http-echo
+  subsets:
+  - name: v1
+    labels:
+      version: v1
