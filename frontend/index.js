@@ -11,6 +11,7 @@ app.get('/get', function(req, res) {
     const method = 'GET';
     const headers = {};
 
+    console.log(req.headers);
     const parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
     console.log(parentSpanContext);
     const span = tracer.startSpan('frontend-get', {
@@ -18,24 +19,22 @@ app.get('/get', function(req, res) {
       tags: {[Tags.SPAN_KIND]: Tags.SPAN_KIND_RPC_SERVER,
              [Tags.COMPONENT]: 'frontend'}
     });
-    tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
-
-    var options = {url, method, headers};
- 
-    request(options, function (error, response, body) {
-    res.send("=> Frontend calling Web-API, Result:  " + body);   
-    console.log('error:', error);
-    console.log('statusCode:', response && response.statusCode); 
-    console.log('body:', body); 
-    
-    span.log({
+    tracer.inject(span, FORMAT_HTTP_HEADERS, headers);    
+    /*span.log({
         'event': '/get',
         'value': body
+    });*/
+
+    
+    var options = {url, method, headers};
+    request(options, function (error, response, body) {
+      res.send("=> Frontend calling Web-API, Result:  " + body);   
+      console.log('error:', error);
+      console.log('statusCode:', response && response.statusCode); 
+      console.log('body:', body); 
     });
 
-    span.finish();   
-    });
-     
+    span.finish();        
 });
 
 app.get('/test', function(req, res) {
