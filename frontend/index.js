@@ -11,17 +11,18 @@ app.get('/get', function(req, res) {
     const method = 'GET';
     const headers = {};
 
-    const span = tracer.startSpan('frontend-get');
-    span.setTag('frontend', '/get');
-    span.setTag(Tags.HTTP_URL, url);
-    span.setTag(Tags.HTTP_METHOD, method);
-    span.setTag(Tags.SPAN_KIND, Tags.SPAN_KIND_RPC_CLIENT);
+    const parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
+    console.log(parentSpanContext);
+    const span = tracer.startSpan('frontend-get', {
+      childOf: parentSpanContext,
+      tags: {[Tags.SPAN_KIND]: Tags.SPAN_KIND_RPC_SERVER,
+             [Tags.COMPONENT]: 'frontend'}
+    });
     tracer.inject(span, FORMAT_HTTP_HEADERS, headers);
 
     var options = {url, method, headers};
  
     request(options, function (error, response, body) {
-//    request('http://localhost:3001/test', function (error, response, body) {
     res.send("=> Frontend calling Web-API, Result:  " + body);   
     console.log('error:', error);
     console.log('statusCode:', response && response.statusCode); 

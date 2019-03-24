@@ -7,11 +7,13 @@ const { Tags, FORMAT_HTTP_HEADERS } = require('opentracing');
 const tracer = initTracer("web-api");  
 
 app.get('/test', function(req, res) {
+
     const parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
     console.log(parentSpanContext);
     const span = tracer.startSpan('web-api-test', {
       childOf: parentSpanContext,
-      tags: {[Tags.SPAN_KIND]: Tags.SPAN_KIND_RPC_SERVER}
+      tags: {[Tags.SPAN_KIND]: Tags.SPAN_KIND_RPC_SERVER,
+             [Tags.COMPONENT]: 'web-api'}
     });
 
     span.log({
@@ -19,10 +21,10 @@ app.get('/test', function(req, res) {
         'value': vers
     });
 
-    span.finish(); 
-    
     res.send(vers + "\n"); 
     console.log(vers); 
+
+    span.finish();   
        
 });
 
