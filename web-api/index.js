@@ -8,6 +8,7 @@ const tracer = initTracer("web-api");
 
 app.get('/test', function(req, res) {
 
+    console.log(req.headers);
     const parentSpanContext = tracer.extract(FORMAT_HTTP_HEADERS, req.headers);
     console.log(parentSpanContext);
     const span = tracer.startSpan('web-api-test', {
